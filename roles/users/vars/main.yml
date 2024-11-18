@@ -1,0 +1,25 @@
+---
+# vars file for users
+
+monad_groups:
+  - administrators
+  - operators
+
+sudo_group_privileges:
+  - group: administrators
+    no_password_required: true
+    commands: ALL
+
+  - group: operators
+    no_password_required: true
+    commands: /sbin/reboot
+
+monad_users:
+#################### ADMINISTRATORS #####################
+  - name: devops
+    group: administrators
+    ssh_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAKuC6O7dKxm250GZquodxkltUx3mmEeFT/lyPVpZJTM jcaro@PortatilDesarrolador"
+#################### OPERATORS ##########################
+  - name: bob
+    group: operators
+    ssh_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAKuC6O7dKxm250GZquodxkltUx3mmEeFT/lyPVpZJTM jcaro@PortatilDesarrolador"

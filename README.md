@@ -1,13 +1,10 @@
-# Vagrant Memset Cloud Example Box
+1 - Install ansible
 
-Vagrant providers each require a custom provider-specific box format.
-This folder shows the example contents of a box for the `memset` provider.
-To turn this into a box:
 
-```
-$ tar cvzf memset.box ./metadata.json ./Vagrantfile
-```
 
-This box works by using Vagrant's built-in Vagrantfile merging to setup
-defaults for Memset. These defaults can easily be overwritten by higher-level
-Vagrantfiles (such as project root Vagrantfiles).
+2 - Configure to run ansible locally
+
+ansible.cfg
+
+
+sudo apt-get -y install python3-passlib

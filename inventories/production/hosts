@@ -1,0 +1,10 @@
+#Production inventory
+
+
+[all:vars]
+env=prod
+loki=loki.prod.monad-internal.xyz
+
+[webservers]
+212.227.235.34 ansible_user=root
+#webserver-1.prod.monad-internal.xyz

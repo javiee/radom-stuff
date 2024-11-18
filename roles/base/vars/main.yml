@@ -1,0 +1,9 @@
+---
+# vars file for base
+utilities_packages:
+  - ufw 
+  - htop
+  - curl
+  - vim
+
+  

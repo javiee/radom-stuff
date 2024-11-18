@@ -1,0 +1,7 @@
+# Jinja2 template for sshd_config
+
+Port {{ sshd_port | default(22) }}
+PermitRootLogin {{ permit_root_login | default('yes') }}
+PasswordAuthentication {{ password_auth | default('no') }}
+SyslogFacility AUTH
+LogLevel INFO

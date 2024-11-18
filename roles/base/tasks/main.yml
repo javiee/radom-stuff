@@ -1,0 +1,61 @@
+---
+# tasks file for base
+
+- name: apt-get upgrade 
+  ansible.builtin.apt:
+    update_cache: yes
+  tags: apt
+
+- name: Perform a apt-get upgrade for all packages
+  ansible.builtin.apt:
+    name: "*"
+    state: latest
+  tags: apt
+
+- name: Install utilities packages
+  ansible.builtin.apt:
+    name: "{{ utilities_packages }}"
+    state: present
+  tags: apt
+
+# Enable firewall and allow access 22
+- name: Allow ssh connections
+  community.general.ufw:
+    rule: allow
+    name: OpenSSH
+  tags: firewall
+
+- name: limit ssh connections
+  community.general.ufw:
+    rule: limit
+    port: ssh
+    proto: tcp
+  tags: firewall
+
+- name: Set ufw logging
+  community.general.ufw:
+    logging: 'on'
+  tags: firewall
+
+- name: Allow all access to tcp port 80
+  community.general.ufw:
+    rule: allow
+    port: '80'
+    proto: tcp
+  tags: firewall
+
+- name: Enables ufw 
+  community.general.ufw:
+    state: enabled
+  tags: firewall
+
+- name: Configures sshd 
+  ansible.builtin.template:
+    src: templates/sshd_config.j2
+    dest: /etc/ssh/sshd_config
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - Restart ssh
+  tags: sshd
