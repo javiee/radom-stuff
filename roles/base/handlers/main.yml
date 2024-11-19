@@ -1,6 +1,6 @@
 ---
 # handlers file for base
-- name:  Restart ssh
-  service:
+- name: Restart ssh
+  ansible.builtin.systemd:
     name: 'ssh'
-    state: 'restarted'
+    state: restarted

@@ -1,0 +1,7 @@
+---
+# defaults file for webservers
+webserver_nginx_pidfile: /run/nginx.pid
+webserver_nginx_conf_path: /etc/nginx/conf.d
+webserver_nginx_config_file: /etc/nginx/nginx.conf
+webserver_nginx_sites_enabled: /etc/nginx/sites-enabled
+webserver_vhosts: []

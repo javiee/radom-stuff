@@ -1,0 +1,48 @@
+- name: Extract __path__ values into a list
+  set_fact:
+    log_paths: "{{ promtail_scrape_configs 
+                  | map(attribute='static_configs')
+                  | flatten 
+                  | map(attribute='labels')
+                  | flatten
+                  | map(attribute='__path__') 
+                  | list }}"
+  tags: promtail, acl
+
+- name: Find all .log files in the directory
+  ansible.builtin.find:
+    paths: "{{ item | dirname }}"
+    patterns: "{{ item | basename }}"
+    file_type: file
+  loop: "{{ log_paths }}"
+  register: log_files
+  tags: promtail, acl
+
+- name: Logs files path
+  set_fact:
+    log_files_paths : "{{ log_files.results | map(attribute='files') | flatten  | map(attribute='path') | unique }}"
+  tags: promtail, acl
+
+- name: Display files path to apply acl
+  ansible.builtin.debug:
+    msg: "{{ log_files_paths }}"
+
+- name: Set read ACL for logs 
+  ansible.posix.acl:
+    path: "{{ item }}"
+    entity: promtail
+    etype: user
+    permissions: rx
+    state: present
+  loop: "{{ log_files_paths }}"
+  notify: Restart promtail
+  tags: promtail, acl
+
+- name: Deploy logrotate acl file
+  ansible.builtin.template:
+    src: "promtail-acl.j2"
+    dest: "/etc/logrotate.d/promtail_acl"
+    owner: root
+    group: root
+    mode: '0644'
+  tags: promtail, acl

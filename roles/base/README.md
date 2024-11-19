@@ -1,38 +1,68 @@
-Role Name
-=========
+# Common Server Configuration Role
 
-A brief description of the role goes here.
+This Ansible role is designed to apply a consistent baseline configuration across all servers. It manages common tasks such as firewall configuration, package installation, and SSH setup, ensuring all servers are uniformly prepared for deployment and secure operations.
 
-Requirements
-------------
+---
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+## Features
 
-Role Variables
---------------
+- **Firewall Configuration**:
+  - Installs and configures `ufw` (Uncomplicated Firewall).
+  - Enables firewall rules for essential ports (e.g., SSH, HTTP).
+  - Ensures the firewall is enabled and active.
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+- **Common Packages Installation**:
+  - Installs a list of commonly used packages (e.g., `curl`, `htop`, `vim`).
+  - Package list is customizable via variables.
 
-Dependencies
-------------
+- **SSH Configuration**:
+  - Updates the SSH daemon configuration using a Jinja2 template.
+  - Restricts root login and enforces secure SSH settings.
+  - Restarts the SSH service to apply changes.
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+---
 
-Example Playbook
-----------------
+## Variables
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+The role is customizable through variables defined in `vars/main.yml`.
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+### **Firewall Variables**
 
-License
--------
+- `common_firewall_ports`:
+  - A list of ports and protocols to allow through the firewall.
+  - Example:
+    ```yaml
 
-BSD
+    ```
 
-Author Information
-------------------
+### **Package Variables**
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+- `common_packages`:
+  - A list of packages to install on all servers.
+  - Example:
+    ```yaml
+    common_packages:
+      - curl
+      - htop
+      - vim
+    ```
+
+### **SSH Variables**
+
+- `ssh_config`:
+  - Path to the SSH daemon configuration template.
+  - Example:
+    ```yaml
+    ssh_config: "templates/sshd_config.j2"
+    ```
+---
+
+## How to Use
+
+1. **Include the Role in Your Playbook**:
+   Add the role to your Ansible playbook:
+   ```yaml
+   - name: Apply Common Configuration
+     hosts: all
+     roles:
+       - role: base

@@ -1,0 +1,19 @@
+---
+# vars file for webservers
+webserver_nginx_version: 1.24.0 
+webserver_nginx_user: www-data
+webserver_nginx_root_folder: /var/www
+webserver_nginx_log_dir: /var/log/applications/nginx
+webserver_nginx_port: 8443
+webserver_deploy_monad_default_site: true
+webserver_vhosts:
+  - port: "{{ webserver_nginx_port }}"
+    template: vhost-template.j2
+    root: "{{ webserver_nginx_root_folder }}/monad-site"
+    index: index.html
+    server_name: monad-default
+    access_log: "{{ webserver_nginx_log_dir }}/access.log"
+    error_log: "{{ webserver_nginx_log_dir }}/error.log"
+    location: |
+      location / {
+        try_files $uri $uri/ =404; }

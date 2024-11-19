@@ -1,2 +1,19 @@
 ---
 # tasks file for promtail
+
+- include_tasks: ubuntu.yml
+  when: ansible_distribution == 'Ubuntu'
+  tags: promtail
+
+- name: Copy Promtail configuration file
+  ansible.builtin.template:
+    src: "promtail-config.yml.j2"
+    dest: "{{ promtail_config_path }}"
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart promtail 
+  tags: promtail
+
+- include_tasks: acl.yml
+  tags: promtail, acl

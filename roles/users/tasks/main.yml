@@ -5,8 +5,8 @@
   ansible.builtin.group:
     name: "{{ item }}"
     state: present
-  loop: "{{ monad_groups }}"
-  tags: users
+  loop: "{{ users_monad_groups }}"
+  tags: base, users
 
 - name: Create monad users
   ansible.builtin.user:
@@ -16,8 +16,8 @@
     password_lock: false
     shell: /bin/bash
     password: "{{ 'secure_password' | password_hash('sha512') }}"  
-  loop: "{{ monad_users }}"
-  tags: users
+  loop: "{{ users_monad }}"
+  tags: base, users
 
 - name: Ensure .ssh directory exists
   ansible.builtin.file:
@@ -26,8 +26,8 @@
     owner: "{{ item.name }}"
     group: "{{ item.group }}"
     mode: '0700'
-  loop: "{{ monad_users }}"
-  tags: users
+  loop: "{{ users_monad }}"
+  tags: base, users
 
 - name: Install public SSH keys
   ansible.builtin.copy:
@@ -36,8 +36,8 @@
     owner: "{{ item.name }}"
     group: "{{ item.group }}"
     mode: '0600'
-  loop: "{{ monad_users }}"
-  tags: users
+  loop: "{{ users_monad }}"
+  tags: base, users
 
 - name: Grant permissions per group
   community.general.sudoers:
@@ -46,5 +46,5 @@
     group: "{{ item.group }}"
     nopassword: true
     commands: "{{ item.commands }}"
-  loop: "{{ sudo_group_privileges }}"
-  tags: sudoers
+  loop: "{{ users_group_sudoers }}"
+  tags: base, sudoers

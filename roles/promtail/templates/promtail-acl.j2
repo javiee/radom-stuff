@@ -1,0 +1,10 @@
+/var/log/dummy_promtail_acl/dummy_promtail_acl.log
+{
+    copytruncate
+    postrotate
+{% for each_dir in log_paths %}
+        /usr/bin/setfacl -R -m d:u:promtail:rx {{ each_dir }}
+        /usr/bin/setfacl -m u:promtail:rx {{ each_dir }}
+{% endfor %}
+    endscript
+}

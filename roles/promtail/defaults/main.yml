@@ -1,2 +1,7 @@
 ---
 # defaults file for promtail
+promtail_config_path: /etc/promtail/config.yml
+promtail_positions_path: /tmp/positions.yaml
+promtail_server_config: 
+  http_listen_port: 9080
+  grpc_listen_port: 0

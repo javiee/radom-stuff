@@ -1,0 +1,16 @@
+
+server {
+
+    listen {{ item.port }};
+    root {{ item.root }};
+    index {{ item.index }};
+
+    server_name {{ item.server_name }};
+
+    access_log {{ item.access_log }} ;
+    error_log {{ item.error_log }};
+
+    {% if item.location is defined %}
+        {{ item.location|indent(4) }}
+    {% endif %}
+}

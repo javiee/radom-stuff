@@ -1,0 +1,17 @@
+# This minimal config scrape only single log file.
+# Primarily used in rpm/deb packaging where promtail service can be started during system init process.
+# And too much scraping during init process can overload the complete system.
+# https://github.com/grafana/loki/issues/11398
+
+server:
+  {{ promtail_server_config | to_nice_yaml(indent=2,sort_keys=False) | indent(2, False) }}
+
+
+positions:
+  filename: {{ promtail_positions_path }}   
+
+clients:
+- url: {{ promtail_loki_server }}
+
+scrape_configs:
+  {{ promtail_scrape_configs | to_nice_yaml(indent=2,sort_keys=False) | indent(2, False) }}

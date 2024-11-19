@@ -1,0 +1,45 @@
+
+- include_tasks: ubuntu.yml
+  when: ansible_distribution == 'Ubuntu'
+
+- name: Create custom logs directory for Nginx
+  ansible.builtin.file:
+    path: "{{ webserver_nginx_log_dir }}"
+    state: directory
+    mode: '0755'
+  tags: install
+
+- name: Remove default nginx configuration
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  tags: install
+
+- name: Set up Nginx configuration
+  ansible.builtin.template:
+    src: nginx.conf.j2
+    dest: "{{ webserver_nginx_config_file }}"
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart Nginx
+  tags: 
+    - install
+
+- name: Start and enable Nginx service
+  ansible.builtin.systemd:
+    name: nginx
+    state: started
+    enabled: yes
+  tags: install
+
+- name: Allow all access to tcp port {{ webserver_nginx_port }}
+  community.general.ufw:
+    rule: allow
+    port: "{{ webserver_nginx_port }}"
+    proto: tcp
+  tags: install
+
+- name: Deploy nginx virtual hosts
+  include_tasks: vhost.yml
+
