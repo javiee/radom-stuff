@@ -1,6 +1,0 @@
----
-# vars file for webservers
-nginx_user: www-data
-nginx_root_folder: /var/www/monad-site
-nginx_log_dir: /var/log/applications/nginx
-nginx_port: 8443
