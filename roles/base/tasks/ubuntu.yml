@@ -1,0 +1,13 @@
+---
+# tasks file for ubuntu
+
+- name: apt-get upgrade 
+  ansible.builtin.apt:
+    update_cache: yes
+  tags: base, apt
+
+- name: Install utilities packages
+  ansible.builtin.apt:
+    name: "{{ base_common_packages }}"
+    state: present
+  tags: base, apt

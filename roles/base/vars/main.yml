@@ -1,6 +1,6 @@
 ---
 # vars file for base
-common_packages:
+base_common_packages:
   - ufw 
   - htop
   - curl

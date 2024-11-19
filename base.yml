@@ -1,0 +1,9 @@
+# file: webservers.yml
+- name: Deploy common config for all servers
+  hosts: all
+  gather_facts: yes
+  roles:
+    - base
+    - users
+    - promtail
+

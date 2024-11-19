@@ -1,7 +1,8 @@
 ---
 # tasks file for promtail
 
-- include_tasks: ubuntu.yml
+- name: Install ubuntu packages
+  ansible.builtin.include_tasks: ubuntu.yml
   when: ansible_distribution == 'Ubuntu'
   tags: promtail
 
@@ -15,5 +16,6 @@
   notify: Restart promtail 
   tags: promtail
 
-- include_tasks: acl.yml
-  tags: promtail, acl
+- name: Deploy acls 
+  ansible.builtin.include_tasks: acl.yml
+  tags: acl

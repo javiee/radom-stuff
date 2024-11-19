@@ -1,6 +1,7 @@
-
-- include_tasks: ubuntu.yml
+- name: Install ubuntu packages
+  ansible.builtin.include_tasks: ubuntu.yml
   when: ansible_distribution == 'Ubuntu'
+  tags: install 
 
 - name: Create custom logs directory for Nginx
   ansible.builtin.file:
@@ -10,7 +11,7 @@
   tags: install
 
 - name: Remove default nginx configuration
-  file:
+  ansible.builtin.file:
     path: /etc/nginx/sites-enabled/default
     state: absent
   tags: install
@@ -23,8 +24,7 @@
     group: root
     mode: '0644'
   notify: Restart Nginx
-  tags: 
-    - install
+  tags: install
 
 - name: Start and enable Nginx service
   ansible.builtin.systemd:
@@ -41,5 +41,5 @@
   tags: install
 
 - name: Deploy nginx virtual hosts
-  include_tasks: vhost.yml
-
+  ansible.builtin.include_tasks: vhost.yml
+  tags: vhost

@@ -1,16 +1,7 @@
----
-# tasks file for base
-
-- name: apt-get upgrade 
-  ansible.builtin.apt:
-    update_cache: yes
-  tags: base, apt
-
-- name: Install utilities packages
-  ansible.builtin.apt:
-    name: "{{ common_packages }}"
-    state: present
-  tags: base, apt
+- name: Install ubuntu packages
+  ansible.builtin.include_tasks: ubuntu.yml
+  when: ansible_distribution == 'Ubuntu'
+  tags: base
 
 # Enable firewall and allow access 22
 - name: Allow ssh connections

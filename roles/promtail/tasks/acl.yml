@@ -1,5 +1,5 @@
 - name: Extract __path__ values into a list
-  set_fact:
+  ansible.builtin.set_fact:
     log_paths: "{{ promtail_scrape_configs 
                   | map(attribute='static_configs')
                   | flatten 
@@ -20,7 +20,7 @@
 
 - name: Logs files path
   set_fact:
-    log_files_paths : "{{ log_files.results | map(attribute='files') | flatten  | map(attribute='path') | unique }}"
+    log_files_paths : "{{ log_files.results | map(attribute='files') | flatten | map(attribute='path') | unique }}"
   tags: promtail, acl
 
 - name: Display files path to apply acl

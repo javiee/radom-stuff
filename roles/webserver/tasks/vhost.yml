@@ -15,13 +15,11 @@
   notify: Restart Nginx
   with_items:
     - "{{ webserver_vhosts }}"
-  tags: 
-    - vhost
+  tags: vhost
 
 - name: Deploys default site
   ansible.builtin.copy:
     src: files/index.html
     dest: "{{ webserver_nginx_root_folder }}"
     mode: '0644'
-  tags: 
-    - vhost
+  tags: vhost

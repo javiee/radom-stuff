@@ -1,0 +1,8 @@
+#Production inventory
+
+[all:vars]
+env=stg
+loki=loki.stg.monad-internal.xyz
+
+[webservers]
+webserver-1.stg.monad-internal.xyz

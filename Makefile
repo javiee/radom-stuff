@@ -1,86 +1,51 @@
-.DEFAULT_GOAL:= lint
-PATH := ./node_modules/.bin:$(PATH)
-SHELL := /bin/bash
-args = $(filter-out $@, $(MAKECMDGOALS))
-.PHONY: all setup install clean reinstall build compile pdfs lint lint-sh lint-shell lint-md lint-markdown lint-txt lint-text pdf lint-yaml lint-yml lint-editorconfig lint-ec ci-lint ci-lint-shell ci-lint-markdown ci-lint-text ci-lint-yaml ci-lint-editorconfig lint-ansible ci-lint-ansible
+# Makefile for Ansible roles with selectable inventories
 
-default: all
+# Variables
+ANSIBLE_PLAYBOOK := ansible-playbook
+INVENTORY ?= inventories/production/hosts # Default inventory file
+ANSIBLE_LINT := ansible-lint
 
-all: install
+# Targets
+.PHONY: all base webserver lint clean
 
-####################################################################
-#                   Installation / Setup                           #
-####################################################################
-setup:
-	@./tools/setup.sh
+all: base webserver lint
 
-install:
-	yarn install
-	pipenv install
+base:
+	@echo "Running ansible-playbook for 'base' role with inventory: $(INVENTORY)..."
+	$(ANSIBLE_PLAYBOOK) base.yml -i $(INVENTORY) 
 
-# remove the build and log folders
+promtail:
+	@echo "Running ansible-playbook for 'base' role with inventory: $(INVENTORY)..."
+	$(ANSIBLE_PLAYBOOK) base.yml -i $(INVENTORY) --tags promtail
+
+users:
+	@echo "Running ansible-playbook for 'base' role with inventory: $(INVENTORY)..."
+	$(ANSIBLE_PLAYBOOK) base.yml -i $(INVENTORY)  --tags users
+
+webserver:
+	@echo "Running ansible-playbook for 'webserver' role with inventory: $(INVENTORY)..."
+	$(ANSIBLE_PLAYBOOK) webserver.yml -i $(INVENTORY)
+
+lint:
+	@echo "Running ansible-lint for playbooks and roles..."
+	$(ANSIBLE_LINT) *.yml roles/*
+
 clean:
-	rm -rf build node_modules
+	@echo "Cleaning up temporary files..."
+	@find . -name "*.retry" -delete
 
-# reinstall the node_modules and start with a fresh node build
-reinstall: clean install
-
-####################################################################
-#                           Linting                                #
-####################################################################
-lint: lint-shell lint-markdown lint-text lint-yaml lint-editorconfig lint-ansible
-
-# Note "|| true" is added to locally make lint can be ran and all linting is preformed, regardless of exit code
-
-# Shell Linting
-lint-sh lint-shell:
-	@./tools/lint-shell.sh || true
-
-# Markdown Linting
-lint-md lint-markdown:
-	@./tools/lint-markdown.sh || true
-
-# Text Linting
-lint-txt lint-text:
-	@./tools/lint-text.sh || true
-
-# Yaml Linting
-lint-yml lint-yaml:
-	@./tools/lint-yaml.sh || true
-
-# Editorconfig Linting
-lint-ec lint-editorconfig:
-	@./tools/lint-editorconfig.sh || true
-
-# Ansible Linting
-lint-ansible:
-	@./tools/lint-ansible.sh || true
-
-####################################################################
-#                              CI                                  #
-####################################################################
-ci-lint: ci-lint-shell ci-lint-markdown ci-lint-text ci-lint-yaml ci-lint-editorconfig ci-lint-ansible
-
-# Shell Linting
-ci-lint-shell:
-	@./tools/lint-shell.sh
-
-# Markdown Linting
-ci-lint-markdown:
-	@./tools/lint-markdown.sh
-
-# Text Linting
-ci-lint-text:
-	@./tools/lint-text.sh
-
-# Yaml Linting
-ci-lint-yaml:
-	@./tools/lint-yaml.sh
-
-# Editorconfig Linting
-ci-lint-editorconfig:
-	@./tools/lint-editorconfig.sh
-
-# Ansible Linting
-ci-lint-ansible:
-	@./tools/lint-ansible.sh
+# Help target to display usage
+help:
+	@echo "Usage: make <target> [INVENTORY=<inventory_file>]"
+	@echo "Targets:"
+	@echo "  all         Run both base and webserver playbooks and ansible-lint."
+	@echo "  base        Run the base playbook with the selected inventory."
+	@echo "  webserver   Run the webserver playbook with the selected inventory."
+	@echo "  promtail    Run the base playbook and execute only promtail tasks."
+	@echo "  users       Run the base playbook and execute only users tasks."
+	@echo "  lint        Run ansible-lint on all playbooks and roles."
+	@echo "  clean       Remove any temporary files."
+	@echo "  help        Show this help message."
+	@echo ""
+	@echo "Default inventory: inventories/staging/hosts "
+	@echo "To use a different inventory, specify INVENTORY=inventories/development/hosts (or another file) in the command."

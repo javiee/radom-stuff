@@ -2,5 +2,4 @@
   ansible.builtin.apt:
     name: "nginx={{ webserver_nginx_version }}*"
     update_cache: true
-  tags: 
-    - install
+  tags: install

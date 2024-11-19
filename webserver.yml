@@ -1,0 +1,6 @@
+# file: webservers.yml
+- name: Deploy nginx on webserver servers
+  hosts: webservers
+  gather_facts: yes
+  roles:
+    - { role: webserver }
