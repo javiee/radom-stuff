@@ -3,12 +3,13 @@
   when: ansible_distribution == 'Ubuntu'
   tags: base
 
-# Enable firewall and allow access 22
-- name: Allow ssh connections
+- name: Allow traffic to common ports 
   community.general.ufw:
     rule: allow
-    name: OpenSSH
-  tags: base, firewall
+    port: '{{ item.port }}'
+    proto: '{{ item.proto }}'
+  loop: "{{ base_firewall_ports }}"
+  tags: firewall
 
 - name: Limit ssh connections
   community.general.ufw:
@@ -20,12 +21,12 @@
 - name: Set ufw logging
   community.general.ufw:
     logging: 'on'
-  tags: base, firewall
+  tags: firewall
 
 - name: Enables ufw 
   community.general.ufw:
     state: enabled
-  tags: base, firewall
+  tags: firewall
 
 - name: Configures sshd 
   ansible.builtin.template:
@@ -36,5 +37,4 @@
     mode: '0644'
   notify:
     - Restart ssh
-  tags: base, sshd
-  
+  tags: sshd

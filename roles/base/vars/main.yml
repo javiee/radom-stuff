@@ -5,3 +5,7 @@ base_common_packages:
   - htop
   - curl
   - vim
+base_firewall_ports:
+  - port: 22
+    proto: tcp 
+    
