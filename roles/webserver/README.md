@@ -1,38 +1,39 @@
-Role Name
-=========
+# Ansible Role: Webserver
 
-A brief description of the role goes here.
+This Ansible role installs and configures the Nginx web server. It provides flexibility for defining virtual hosts, customizing the Nginx configuration, and managing logs.
 
-Requirements
-------------
+## Requirements
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+- Ansible 2.17.2 or later
+- Supported systems: Ubuntu inux distributions (extendable for others)
 
-Role Variables
---------------
+## Role Variables
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+The following variables are customizable in the role. Default values are set in the `vars/main.yml` file.
 
-Dependencies
-------------
+| Variable                      | Default Value                            | Description                                                                                     |
+|-------------------------------|------------------------------------------|-------------------------------------------------------------------------------------------------|
+| `webserver_nginx_version`     | `1.24.0`                                 | Version of Nginx to install.                                                                    |
+| `webserver_nginx_user`        | `www-data`                               | The user under which the Nginx service runs.                                                   |
+| `webserver_nginx_root_folder` | `/var/www`                               | The root folder for hosting web content.                                                       |
+| `webserver_nginx_log_dir`     | `/var/log/applications/nginx`            | Directory for storing Nginx logs.                                                              |
+| `webserver_nginx_port`        | `8443`                                   | The port on which Nginx listens.                                                               |
+| `webserver_deploy_monad_default_site` | `true`                          | Whether to deploy a default virtual host for "monad-site".                                      |
+| `webserver_vhosts`            | See example below                        | List of virtual hosts with their specific configurations.                                       |
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+### Virtual Hosts (`webserver_vhosts`)
 
-Example Playbook
-----------------
+The `webserver_vhosts` variable allows you to define one or more virtual hosts. Below is the default configuration:
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
-
-License
--------
-
-BSD
-
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+```yaml
+webserver_vhosts:
+  - port: "{{ webserver_nginx_port }}"
+    template: vhost-template.j2
+    root: "{{ webserver_nginx_root_folder }}/monad-site"
+    index: index.html
+    server_name: monad-default
+    access_log: "{{ webserver_nginx_log_dir }}/access.log"
+    error_log: "{{ webserver_nginx_log_dir }}/error.log"
+    location: |
+      location / {
+        try_files $uri $uri/ =404; }
