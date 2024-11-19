@@ -1,8 +1,0 @@
-# file: webservers.yml
-- hosts: all
-  gather_facts: yes
-  roles:
-    - base
-    - users
-    - promtail
-
